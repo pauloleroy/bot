@@ -73,6 +73,16 @@ class InstaBot():
             check_login = False
         time.sleep(1)
         return check_login
+    def check_likes(self,instagram_account):
+        time.sleep(2)
+        self.driver.get(f'https://www.instagram.com/{instagram_account}/')
+        time.sleep(1)
+        pic_table = self.driver.find_elements(By.CSS_SELECTOR, '.qi72231t.nu7423ey.n3hqoq4p.r86q59rh.b3qcqh3k.fq87ekyn.bdao358l.fsf7x5fv.rse6dlih.s5oniofx.m8h3af8h.l7ghb35v.kjdc1dyq.kmwttqpk.srn514ro.oxkhqvkx.rl78xhln.nch0832m.cr00lzj9.rn8ck1ys.s3jn8y49.icdlwmnq._a6hd')
+        urls = [element.get_attribute('href') for element in pic_table]
+        print(urls)
+        pic_urls = list(filter(lambda url: ('/p/' in url), urls))
+        print(pic_urls)
+
 
 def filter_verified(userlist):
     '''filter data from the followers and following list'''

@@ -49,7 +49,7 @@ class App(ctk.CTk):
         self.since_label.grid(row=4,column=0,pady=2)
         self.since_entry = ctk.CTkEntry(master=self.left_frame)
         self.since_entry.grid(row=4,column=1,pady=10)
-        self.search_button = ctk.CTkButton(master=self.left_frame, text="Search")
+        self.search_button = ctk.CTkButton(master=self.left_frame, text="Search", command=self.check_likes)
         self.search_button.grid(row=5, column=1,pady=2)
         self.num_users_label = ctk.CTkLabel(master=self.left_frame, text="Number of Users")
         self.num_users_label.grid(row=0,column=2,padx=10)
@@ -157,3 +157,6 @@ class App(ctk.CTk):
             self.database.delete_related_page(username,self.related_list.get(tkinter.ANCHOR).lower())
             self.related_list.delete(tkinter.ANCHOR)
             #insert msgbox
+
+    def check_likes(self):
+        self.bot.check_likes('nandah_riibeiro')
