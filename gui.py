@@ -100,12 +100,17 @@ class App(ctk.CTk):
         #Check if there is a better way then using global variable
         global username
         #check if login on instagram was successful instagram before open main gui
-        if True:
+        self.bot.login(self.login.username.get(),self.login.password.get())
+        check_login = self.bot.check_login()
+        if check_login:
             self.username.set(self.login.username.get().lower())
             username = self.login.username.get().lower()
             self.database.insert_user(username)
             self.login.destroy()
             self.uptade_screen()
+        else:
+            #messagebox awarning login fail
+            pass
         
 
     def uptade_screen(self):

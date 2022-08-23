@@ -62,6 +62,15 @@ class InstaBot():
             by=By.CSS_SELECTOR,value="._ab8y._ab94._ab97._ab9f._ab9k._ab9p._abcm")
         filtered_list = filter_verified(unfiltered_list)
         return filtered_list 
+    def check_login(self):
+        time.sleep(2)
+        login_url = self.driver.current_url
+        if login_url == 'https://www.instagram.com/accounts/onetap/?next=%2F':
+            check_login = True
+        else:
+            check_login = False
+        time.sleep(1)
+        return check_login
 
 def filter_verified(userlist):
     '''filter data from the followers and following list'''
