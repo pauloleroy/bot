@@ -40,3 +40,6 @@ class MyQueries():
     def insert_user(self,user_account):
         query = f"INSERT INTO user_list (user_account,created_on,is_activated) VALUES ('{user_account}',CURRENT_TIMESTAMP, true)"
         return query
+    def insert_login_track(self,user_id):
+        query = f"INSERT INTO login_track (user_id,login_time) VALUES ({user_id},CURRENT_TIMESTAMP)"
+        return query

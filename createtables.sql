@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS login_track (
 CREATE TABLE IF NOT EXISTS bot_follow_track(
     follow_id SERIAL PRIMARY KEY,
     instagram_id INTEGER REFERENCES instagram_account(instagram_id )NOT NULL,
-    login_id INTEGER REFERENCES login_track(login_id) NOT NULL,
+    user_id INTEGER REFERENCES user_list(user_id) NOT NULL,
     created_on TIMESTAMP NOT NULL,
     is_activated BOOLEAN NOT NULL
 )

@@ -106,6 +106,8 @@ class App(ctk.CTk):
             self.username.set(self.login.username.get().lower())
             username = self.login.username.get().lower()
             self.database.insert_user(username)
+            self.user_id = self.database.select_user_id_by_account(username)[0][0]
+            self.database.insert_login_track(self.user_id)
             self.login.destroy()
             self.uptade_screen()
         else:

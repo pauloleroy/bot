@@ -44,11 +44,13 @@ class DBConnection():
             query = self.queries.insert_user(user_account)
             cur.execute(query)
             self.conn.commit()
-        pass
 
-    def insert_login_track(self):
-        #ANALIZE IF I ACCTUALY NEED THIS. JUST USE THE BOT TRACK TABLE
-        pass
+    def insert_login_track(self,user_id):
+        '''insert to login track DB'''
+        cur = self.conn.cursor()
+        query = self.queries.insert_login_track(user_id)
+        cur.execute(query)
+        self.conn.commit()
 
     def insert_following(self, instagram_account):
         '''insert 1 following need to call for loop'''
