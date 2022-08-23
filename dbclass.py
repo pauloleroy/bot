@@ -33,10 +33,17 @@ class DBConnection():
             my_instagram_id = my_instagram_id[0][0]
         return my_instagram_id
 
-    def insert_user(self):
+    def insert_user(self, user_account):
+        cur = self.conn.cursor()
+        user_id = self.select_user_id_by_account(user_account)
+        if len(user_id) == 0:
+            query = self.queries.insert_user(user_account)
+            cur.execute(query)
+            self.conn.commit()
         pass
 
     def insert_login_track(self):
+        #ANALIZE IF I ACCTUALY NEED THIS. JUST USE THE BOT TRACK TABLE
         pass
 
     def insert_following(self, instagram_account):

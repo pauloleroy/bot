@@ -88,7 +88,7 @@ class App(ctk.CTk):
         self.login.password_label.grid(row=1,column=0,pady=5,padx=5)
         self.login.password = ctk.CTkEntry(master=self.login)
         self.login.password.grid(row=1,column=1,pady=5,padx=5)
-        self.login.confirm_button = ctk.CTkButton(master=self.login, text='Confirm', command=self.confirm)
+        self.login.confirm_button = ctk.CTkButton(master=self.login, text='Confirm', command=self.login_app)
         self.login.confirm_button.grid(row=2,pady=5,padx=5)
         
 
@@ -96,13 +96,14 @@ class App(ctk.CTk):
         self.login.destroy()
         self.destroy()
 
-    def confirm(self):
+    def login_app(self):
         #Check if there is a better way then using global variable
         global username
-        #validar de acordo com instagram
-        if self.login.username.get() =='pauloleroy':
+        #check if login on instagram was successful instagram before open main gui
+        if True:
             self.username.set(self.login.username.get().lower())
             username = self.login.username.get().lower()
+            self.database.insert_user(username)
             self.login.destroy()
             self.uptade_screen()
         
@@ -110,7 +111,6 @@ class App(ctk.CTk):
     def uptade_screen(self):
         
         """
-        self.bot.login(self.login_entry.get(),self.password_entry.get())
         #check if login was successful instagram before open main gui
         #insert user to database if doesnt exist
         #insert login_track
@@ -124,8 +124,8 @@ class App(ctk.CTk):
         '''
         self.database.delete_following()
         self.database.delete_follower()
-        following_list = self.bot.get_following(self.login_entry.get())
-        follower_list = self.bot.get_followers(self.login_entry.get())
+        following_list = self.bot.get_following(username)
+        follower_list = self.bot.get_followers(username)
         for following in following_list:
             self.database.insert_following(following)
         for follower in follower_list:

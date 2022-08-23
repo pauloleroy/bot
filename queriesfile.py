@@ -37,3 +37,6 @@ class MyQueries():
     def insert_follower(self,instagram_id):
         query = f"INSERT INTO follower (instagram_id) VALUES ({instagram_id})"
         return query
+    def insert_user(self,user_account):
+        query = f"INSERT INTO user_list (user_account,created_on,is_activated) VALUES ('{user_account}',CURRENT_TIMESTAMP, true)"
+        return query
