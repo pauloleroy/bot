@@ -1,5 +1,3 @@
-from cgitb import text
-from turtle import width
 import customtkinter as ctk
 import tkinter
 import tkinter.messagebox
@@ -75,6 +73,7 @@ class App(ctk.CTk):
         self.open_login_window()
 
     def open_login_window(self):
+        '''open login pop-up'''
         self.login = ctk.CTkToplevel(self)
         self.login.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.login.grab_set()
@@ -93,13 +92,14 @@ class App(ctk.CTk):
         
 
     def on_closing(self):
+        '''close the whole app if login window is closed'''
         self.login.destroy()
         self.destroy()
 
     def login_app(self):
+        '''login to instagram and send user data to DB'''
         #Check if there is a better way then using global variable
         global username
-        #check if login on instagram was successful instagram before open main gui
         self.bot.login(self.login.username.get(),self.login.password.get())
         check_login = self.bot.check_login()
         if check_login:
@@ -114,10 +114,9 @@ class App(ctk.CTk):
         
 
     def uptade_screen(self):
+        '''uptade main screen after login and uptade follower list on DB'''
         
         """
-        #check if login was successful instagram before open main gui
-        #insert user to database if doesnt exist
         #insert login_track
         """
         #loading related list
@@ -138,6 +137,7 @@ class App(ctk.CTk):
         '''
         
     def add_related_page(self):
+        '''add related pages to DB and list box'''
         to_insert = self.database.check_related_id_exists(username,self.user_entry.get().lower())
         if to_insert and self.user_entry.get() != '':
             self.database.insert_related_page(username,self.user_entry.get().lower())
@@ -150,6 +150,7 @@ class App(ctk.CTk):
         
     
     def delete_account(self):
+        '''delete related page from DB and listbox'''
         if self.related_list.curselection():
             self.database.delete_related_page(username,self.related_list.get(tkinter.ANCHOR).lower())
             self.related_list.delete(tkinter.ANCHOR)

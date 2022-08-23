@@ -11,6 +11,7 @@ class InstaBot():
         self.driver = webdriver.Chrome(executable_path=path,options=options)
 
     def login(self,myusername,mypassword):
+        '''login to instagram'''
         self.driver.get("https://www.instagram.com/")
         time.sleep(5)
 
@@ -63,6 +64,7 @@ class InstaBot():
         filtered_list = filter_verified(unfiltered_list)
         return filtered_list 
     def check_login(self):
+        '''check if login was sucessful'''
         time.sleep(2)
         login_url = self.driver.current_url
         if login_url == 'https://www.instagram.com/accounts/onetap/?next=%2F':
