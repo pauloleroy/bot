@@ -159,4 +159,4 @@ class App(ctk.CTk):
             #insert msgbox
 
     def check_likes(self):
-        self.bot.check_likes('nandah_riibeiro')
+        self.bot.check_likes('fabbricestas',3)

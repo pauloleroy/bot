@@ -65,7 +65,7 @@ class InstaBot():
         return filtered_list 
     def check_login(self):
         '''check if login was sucessful'''
-        time.sleep(2)
+        time.sleep(4)
         login_url = self.driver.current_url
         if login_url == 'https://www.instagram.com/accounts/onetap/?next=%2F':
             check_login = True
@@ -73,15 +73,41 @@ class InstaBot():
             check_login = False
         time.sleep(1)
         return check_login
-    def check_likes(self,instagram_account):
+    def check_likes(self,instagram_account, num_pic):
         time.sleep(2)
         self.driver.get(f'https://www.instagram.com/{instagram_account}/')
-        time.sleep(1)
-        pic_table = self.driver.find_elements(By.CSS_SELECTOR, '.qi72231t.nu7423ey.n3hqoq4p.r86q59rh.b3qcqh3k.fq87ekyn.bdao358l.fsf7x5fv.rse6dlih.s5oniofx.m8h3af8h.l7ghb35v.kjdc1dyq.kmwttqpk.srn514ro.oxkhqvkx.rl78xhln.nch0832m.cr00lzj9.rn8ck1ys.s3jn8y49.icdlwmnq._a6hd')
+        time.sleep(3)
+        # pic_table = self.driver.find_elements(By.CSS_SELECTOR, '.qi72231t.nu7423ey.n3hqoq4p.r86q59rh.b3qcqh3k.fq87ekyn.bdao358l.fsf7x5fv.rse6dlih.s5oniofx.m8h3af8h.l7ghb35v.kjdc1dyq.kmwttqpk.srn514ro.oxkhqvkx.rl78xhln.nch0832m.cr00lzj9.rn8ck1ys.s3jn8y49.icdlwmnq._a6hd')
+        pic_table= self.driver.find_elements(By.TAG_NAME,'a')
         urls = [element.get_attribute('href') for element in pic_table]
-        print(urls)
         pic_urls = list(filter(lambda url: ('/p/' in url), urls))
-        print(pic_urls)
+        pic_urls = pic_urls[:num_pic]
+        pic_urls = list(map(lambda element: (element + 'liked_by/'),pic_urls))
+        for pic in pic_urls:
+            time.sleep(5)
+            self.driver.get(pic)
+            time.sleep(3)
+            last_height = self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            while True:
+                time.sleep(2)
+                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(2)
+                new_height = self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                if new_height == last_height:
+                    break
+                last_height = new_height
+            likes_list = self.driver.find_elements(
+                by=By.CSS_SELECTOR,value="._ab8w._ab94._ab97._ab9f._ab9k._ab9p._abcm")
+            mylist = []
+            for like in range(len(likes_list)):
+                mylist.append(likes_list[like].text)
+            mylist = list(filter(lambda user: ('\n' not in user),mylist))
+            mylist = list(filter(lambda user: (user != ''),mylist))
+            print(mylist)
+            print(len(mylist))
+            
+            
+
 
 
 def filter_verified(userlist):
