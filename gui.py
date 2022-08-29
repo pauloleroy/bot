@@ -159,4 +159,8 @@ class App(ctk.CTk):
             #insert msgbox
 
     def check_likes(self):
-        self.bot.check_likes('fabbricestas',3)
+        url_likes = self.bot.check_likes('fabbricestas',3)
+        print(url_likes)
+        for key, value in url_likes.items():
+            print(key)
+            print(len(value))
