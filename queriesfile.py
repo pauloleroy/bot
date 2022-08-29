@@ -43,3 +43,19 @@ class MyQueries():
     def insert_login_track(self,user_id):
         query = f"INSERT INTO login_track (user_id,login_time) VALUES ({user_id},CURRENT_TIMESTAMP)"
         return query
+    def photo_id_by_url(self,url):
+        query = f"SELECT photo_id FROM photo WHERE photo_url='{url}'"
+        return query
+    def insert_photo(self,instagram_id,url):
+        query = f"INSERT INTO photo (instagram_id,photo_url,photo_date,is_activated) VALUES ({instagram_id},'{url}',CURRENT_TIMESTAMP,true)"
+        return query
+    def select_related_page_by_user(self,user_account):
+        query = f"SELECT instagram_account FROM instagram_account INNER JOIN related_page ON related_page.instagram_id = instagram_account.instagram_id WHERE user_id =(SELECT user_id FROM user_list WHERE user_account='{user_account}')"
+        return query
+    def check_liketrack_exist(self,photo_id,instagram_id):
+        query = f"SELECT like_id FROM like_track WHERE photo_id = {photo_id} AND instagram_id = {instagram_id}"
+        return query
+    def insert_liketrack(self,photo_id,instagram_id):
+        query = f"INSERT INTO like_track (photo_id,instagram_id,created_on,is_activated) VALUES ({photo_id},{instagram_id},CURRENT_TIMESTAMP,true)"
+        return query
+    # select instagram_account, count(like_track.instagram_id) as n_like FROM like_track INNER JOIN instagram_account ON instagram_account.instagram_id = like_track.instagram_id GROUP BY instagram_account order by count(like_track.instagram_id) desc

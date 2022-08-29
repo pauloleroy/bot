@@ -159,8 +159,21 @@ class App(ctk.CTk):
             #insert msgbox
 
     def check_likes(self):
-        url_likes = self.bot.check_likes('fabbricestas',3)
-        print(url_likes)
-        for key, value in url_likes.items():
-            print(key)
-            print(len(value))
+        try:
+            int(self.since_entry.get())
+        except ValueError:
+            #message box
+            is_validated =  False
+            print("pick valid number")
+        else:
+            is_validated = True
+        if is_validated:
+            related_pages = self.database.select_related_page_by_user(username)        
+            for page in related_pages:
+                url_likes = self.bot.check_likes(page[0], int(self.since_entry.get()))
+                related_page_id = self.database.select_instagram_id_by_account(page[0])[0][0]
+                for key, values in url_likes.items():
+                    photo_id = self.database.insert_photo(related_page_id,key)
+                    for account in values:
+                        self.database.insert_like_track(photo_id,account)
+                        

@@ -135,5 +135,48 @@ class DBConnection():
         cur.execute(query)
         self.conn.commit()
 
+    def insert_photo(self,instagram_id,url):
+        cur = self.conn.cursor()
+        photo_id = self.photo_id_by_url(url)
+        if len(photo_id) == 0:
+            query = self.queries.insert_photo(instagram_id,url)
+            cur.execute(query)
+            self.conn.commit()
+            photo_id = self.photo_id_by_url(url)[0][0]
+        else:
+            photo_id = photo_id[0][0]
+        return photo_id
+
+    def photo_id_by_url(self,url):
+        cur = self.conn.cursor()
+        query = self.queries.photo_id_by_url(url)
+        cur.execute(query)
+        photo_id = cur.fetchall()
+        return photo_id
+    
+    def insert_like_track(self,photo_id,instagram_account):
+        cur = self.conn.cursor()
+        instagram_id = self.check_return_if_new_account(instagram_account)
+        query = self.queries.check_liketrack_exist(photo_id,instagram_id)
+        cur.execute(query)
+        like_track = cur.fetchall()
+        if len(like_track)==0:
+            query = self.queries.insert_liketrack(photo_id,instagram_id)
+            cur.execute(query)
+            self.conn.commit()
+            query = self.queries.check_liketrack_exist(photo_id,instagram_id)
+            cur.execute(query)
+            like_track = cur.fetchall()[0][0]
+        else:
+            like_track = like_track[0][0]
+        return like_track
+
+    def select_related_page_by_user(self,user_account):
+        cur = self.conn.cursor()
+        query = self.queries.select_related_page_by_user(user_account)
+        cur.execute(query)
+        related_pages = cur.fetchall()
+        return related_pages
+
     def select_follower_vs_bot(self):
         pass
