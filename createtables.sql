@@ -46,9 +46,8 @@ CREATE TABLE IF NOT EXISTS photo(
 )
 CREATE TABLE IF NOT EXISTS like_track(
     like_id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES user_list(user_id) NOT NULL,
-    instagram_id_related INTEGER REFERENCES instagram_account(instagram_id) NOT NULL,
-    instagram_id_client INTEGER REFERENCES instagram_account(instagram_id) NOT NULL,
     photo_id INTEGER REFERENCES photo(photo_id)NOT NULL,
+    instagram_id INTEGER REFERENCES instagram_account(instagram_id) NOT NULL,
+    created_on TIMESTAMP NOT NULL,
     is_activated BOOLEAN NOT NULL
 )
