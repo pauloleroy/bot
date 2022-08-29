@@ -43,3 +43,10 @@ class MyQueries():
     def insert_login_track(self,user_id):
         query = f"INSERT INTO login_track (user_id,login_time) VALUES ({user_id},CURRENT_TIMESTAMP)"
         return query
+    def select_id_by_name(self,table,id_col,name_col,name):
+        query = f"SELECT {id_col} FROM {table} WHERE {name_col}='{name}'"
+        return query
+    def insert_data(self,table,col_list,value_list):
+        for col,value in zip(col_list,value_list):
+            col_string = col + ', '
+        pass
