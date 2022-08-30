@@ -178,5 +178,12 @@ class DBConnection():
         related_pages = cur.fetchall()
         return related_pages
 
+    def select_like_list(self):
+        cur = self.conn.cursor()
+        query = self.queries.select_like_list()
+        cur.execute(query)
+        like_list = cur.fetchall()
+        return like_list
+
     def select_follower_vs_bot(self):
         pass

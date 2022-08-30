@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import tkinter
 import tkinter.messagebox
+from tkinter import CENTER, END, NO, RIGHT, VERTICAL, W, Y, YES, ttk
 
 username=''
 
@@ -42,7 +43,7 @@ class App(ctk.CTk):
         self.list_label = ctk.CTkLabel(master=self.left_frame, text="List")
         self.list_label.grid(row=2,column=0, padx=10, sticky="ne",pady=2)
         self.related_list = tkinter.Listbox(master=self.left_frame)
-        self.related_list.grid(row=2,column=1,ipadx=40, ipady=150,pady=2)
+        self.related_list.grid(row=2,column=1,ipadx=30, ipady=150,pady=2)
         self.remove_button = ctk.CTkButton(master=self.left_frame, text="Remove", command=self.delete_account)
         self.remove_button.grid(row=3, column=1,pady=2)
         self.since_label = ctk.CTkLabel(master=self.left_frame, text="Check since")
@@ -57,8 +58,24 @@ class App(ctk.CTk):
         self.num_users_entry.grid(row=0, column=3,padx=5)
         self.runbot_button = ctk.CTkButton(master=self.left_frame, text="Run BOT")
         self.runbot_button.grid(row=0,column=4,padx=5)
-        self.main_users_list = tkinter.Listbox(master=self.left_frame)
-        self.main_users_list.grid(row=1, column=3,columnspan=2,rowspan=4, ipadx=120,ipady=250)
+        self.list_frame = ctk.CTkFrame(master=self.left_frame)
+        self.list_frame.grid(row=2, column=2,columnspan=2,rowspan=4,ipady=250, sticky='nsew')
+        self.list_frame.grid_rowconfigure(0, weight=1)
+        self.list_frame.grid_columnconfigure(0, weight=1)
+        columns = ('Account', 'N Likes', 'N Pages')
+        self.main_users_list = ttk.Treeview(master=self.list_frame, columns=columns, show='headings')
+        self.main_users_list.column("#0", width=0, stretch=NO)
+        self.main_users_list.column('Account',anchor=W,stretch=YES)
+        self.main_users_list.column('N Likes',width=80,stretch=NO,anchor=CENTER)
+        self.main_users_list.column('N Pages',width=80,stretch=NO,anchor=CENTER)
+        self.main_users_list.heading("#0", text="",anchor=W)
+        self.main_users_list.heading('Account',text="Account",anchor=CENTER)
+        self.main_users_list.heading('N Likes',text="N Likes",anchor=CENTER)
+        self.main_users_list.heading('N Pages',text="N Pages",anchor=CENTER)
+        self.main_users_list.grid(row=0, column=0,sticky="nswe")
+        self.main_users_scroll = ttk.Scrollbar(self.list_frame,orient=VERTICAL,command=self.main_users_list.yview)
+        self.main_users_scroll.grid(column=1,row=0,sticky="ns")
+        self.main_users_list.configure(yscrollcommand=self.main_users_scroll.set)
 
         self.right_frame.grid_rowconfigure(1,weight=1)
         self.unfollow_since_label = ctk.CTkLabel(master=self.right_frame, text="Since")
@@ -71,6 +88,7 @@ class App(ctk.CTk):
         self.unfollow_list.grid(row=1,column=0,columnspan=3,sticky="ns", pady=20,ipadx=60)
 
         self.open_login_window()
+        self.load_like_list()
 
     def open_login_window(self):
         '''open login pop-up'''
@@ -176,4 +194,9 @@ class App(ctk.CTk):
                     photo_id = self.database.insert_photo(related_page_id,key)
                     for account in values:
                         self.database.insert_like_track(photo_id,account)
-                        
+    
+    def load_like_list(self):
+        like_list = self.database.select_like_list()
+        print(len(like_list))
+        for like in like_list:
+            self.main_users_list.insert('', END, values=like)

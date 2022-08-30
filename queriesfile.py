@@ -58,4 +58,6 @@ class MyQueries():
     def insert_liketrack(self,photo_id,instagram_id):
         query = f"INSERT INTO like_track (photo_id,instagram_id,created_on,is_activated) VALUES ({photo_id},{instagram_id},CURRENT_TIMESTAMP,true)"
         return query
-    # select instagram_account, count(like_track.instagram_id) as n_like FROM like_track INNER JOIN instagram_account ON instagram_account.instagram_id = like_track.instagram_id GROUP BY instagram_account order by count(like_track.instagram_id) desc
+    def select_like_list(self):
+        query = "SELECT instagram_account, count(like_track.instagram_id) AS n_like FROM like_track INNER JOIN instagram_account ON instagram_account.instagram_id = like_track.instagram_id GROUP BY instagram_account ORDER BY count(like_track.instagram_id) DESC"
+        return query
