@@ -178,9 +178,9 @@ class DBConnection():
         related_pages = cur.fetchall()
         return related_pages
 
-    def select_like_list(self):
+    def select_like_list(self,id_list):
         cur = self.conn.cursor()
-        query = self.queries.select_like_list()
+        query = self.queries.select_like_list(id_list)
         cur.execute(query)
         like_list = cur.fetchall()
         return like_list

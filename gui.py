@@ -62,16 +62,16 @@ class App(ctk.CTk):
         self.list_frame.grid(row=2, column=2,columnspan=2,rowspan=4,ipady=250, sticky='nsew')
         self.list_frame.grid_rowconfigure(0, weight=1)
         self.list_frame.grid_columnconfigure(0, weight=1)
-        columns = ('Account', 'N Likes', 'N Pages')
+        columns = ('Account', 'N Pages', 'N Likes')
         self.main_users_list = ttk.Treeview(master=self.list_frame, columns=columns, show='headings')
         self.main_users_list.column("#0", width=0, stretch=NO)
         self.main_users_list.column('Account',anchor=W,stretch=YES)
-        self.main_users_list.column('N Likes',width=80,stretch=NO,anchor=CENTER)
         self.main_users_list.column('N Pages',width=80,stretch=NO,anchor=CENTER)
+        self.main_users_list.column('N Likes',width=80,stretch=NO,anchor=CENTER)
         self.main_users_list.heading("#0", text="",anchor=W)
         self.main_users_list.heading('Account',text="Account",anchor=CENTER)
-        self.main_users_list.heading('N Likes',text="N Likes",anchor=CENTER)
         self.main_users_list.heading('N Pages',text="N Pages",anchor=CENTER)
+        self.main_users_list.heading('N Likes',text="N Likes",anchor=CENTER)
         self.main_users_list.grid(row=0, column=0,sticky="nswe")
         self.main_users_scroll = ttk.Scrollbar(self.list_frame,orient=VERTICAL,command=self.main_users_list.yview)
         self.main_users_scroll.grid(column=1,row=0,sticky="ns")
@@ -88,7 +88,6 @@ class App(ctk.CTk):
         self.unfollow_list.grid(row=1,column=0,columnspan=3,sticky="ns", pady=20,ipadx=60)
 
         self.open_login_window()
-        self.load_like_list()
 
     def open_login_window(self):
         '''open login pop-up'''
@@ -167,7 +166,7 @@ class App(ctk.CTk):
         else:
             #insert msgbox
             pass
-        
+        self.load_like_list()
     
     def delete_account(self):
         '''delete related page from DB and listbox'''
@@ -175,6 +174,7 @@ class App(ctk.CTk):
             self.database.delete_related_page(username,self.related_list.get(tkinter.ANCHOR).lower())
             self.related_list.delete(tkinter.ANCHOR)
             #insert msgbox
+        self.load_like_list()
 
     def check_likes(self):
         try:
@@ -196,7 +196,13 @@ class App(ctk.CTk):
                         self.database.insert_like_track(photo_id,account)
     
     def load_like_list(self):
-        like_list = self.database.select_like_list()
-        print(len(like_list))
-        for like in like_list:
-            self.main_users_list.insert('', END, values=like)
+        for item in self.main_users_list.get_children():
+            self.main_users_list.delete(item)
+        id_list = []
+        for user in self.related_list.get(0,END):
+            id_list.append(self.database.select_instagram_id_by_account(user)[0][0])
+             
+        if len(id_list) > 0:
+            like_list = self.database.select_like_list(id_list)
+            for like in like_list:
+                self.main_users_list.insert('', END, values=like)
