@@ -59,10 +59,10 @@ class MyQueries():
         query = f"INSERT INTO like_track (photo_id,instagram_id,created_on,is_activated) VALUES ({photo_id},{instagram_id},CURRENT_TIMESTAMP,true)"
         return query
     def select_like_list(self,id_list):
-        where = "WHERE "
+        where = "WHERE ("
         for id in id_list:
             where =  where + "photo.instagram_id=" + str(id) + " or "
-        where = where[:-4]
+        where = where[:-4] + ")" + " and following_id is null"
         query = f"""
         select instagram_account, count(distinct photo.instagram_id),count(distinct like_track.photo_id)
         from instagram_account
@@ -70,6 +70,8 @@ class MyQueries():
         on instagram_account.instagram_id = like_track.instagram_id
         inner join photo
         on photo.photo_id = like_track.photo_id
+        left outer join following
+        on following.instagram_id = like_track.instagram_id
         {where}
         group by instagram_account
         order by count(distinct photo.instagram_id) desc , count(distinct like_track.photo_id) desc

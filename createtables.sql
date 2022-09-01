@@ -12,11 +12,11 @@ CREATE TABLE IF NOT EXISTS instagram_account (
 )
 CREATE TABLE IF NOT EXISTS follower (
     follower_id SERIAL PRIMARY KEY,
-    instagram_id INTEGER REFERENCES instagram_account(instagram_id) NOT NULL
+    instagram_id INTEGER REFERENCES instagram_account(instagram_id) UNIQUE NOT NULL
 )
 CREATE TABLE IF NOT EXISTS following (
     following_id SERIAL PRIMARY KEY,
-    instagram_id INTEGER REFERENCES instagram_account(instagram_id) NOT NULL
+    instagram_id INTEGER REFERENCES instagram_account(instagram_id) UNIQUE NOT NULL
 )
 CREATE TABLE IF NOT EXISTS login_track (
     login_id SERIAL PRIMARY KEY,
