@@ -4,6 +4,7 @@ import tkinter.messagebox
 from tkinter import CENTER, END, NO, RIGHT, VERTICAL, W, Y, YES, ttk
 
 username=''
+login_id = ''
 
 ctk.set_appearance_mode("light")
 class App(ctk.CTk):
@@ -56,7 +57,7 @@ class App(ctk.CTk):
         self.num_users_label.grid(row=0,column=2,padx=10)
         self.num_users_entry = ctk.CTkEntry(master=self.left_frame)
         self.num_users_entry.grid(row=0, column=3,padx=5)
-        self.runbot_button = ctk.CTkButton(master=self.left_frame, text="Run BOT")
+        self.runbot_button = ctk.CTkButton(master=self.left_frame, text="Run BOT", command=self.auto_follow)
         self.runbot_button.grid(row=0,column=4,padx=5)
         self.list_frame = ctk.CTkFrame(master=self.left_frame)
         self.list_frame.grid(row=2, column=2,columnspan=2,rowspan=4,ipady=250, sticky='nsew')
@@ -117,6 +118,7 @@ class App(ctk.CTk):
         '''login to instagram and send user data to DB'''
         #Check if there is a better way then using global variable
         global username
+        global login_id
         self.bot.login(self.login.username.get(),self.login.password.get())
         check_login = self.bot.check_login()
         if check_login:
@@ -124,7 +126,7 @@ class App(ctk.CTk):
             username = self.login.username.get().lower()
             self.database.insert_user(username)
             self.user_id = self.database.select_user_id_by_account(username)[0][0]
-            self.database.insert_login_track(self.user_id)
+            login_id = self.database.insert_login_track(self.user_id)
             self.login.destroy()
             self.uptade_screen()
         else:
@@ -140,20 +142,19 @@ class App(ctk.CTk):
         """
         #loading related list
         self.related_list.delete(0,tkinter.END)
-        related_list = self.database.load_related_page(username)
+        related_list = self.database.select_related_page(username)
         for item in related_list:
             self.related_list.insert(tkinter.END, item[0])
         #clear and loading followers and following to database       
-        '''
         self.database.delete_following()
         self.database.delete_follower()
         following_list = self.bot.get_following(username)
-        follower_list = self.bot.get_followers(username)
         for following in following_list:
             self.database.insert_following(following)
+        follower_list = self.bot.get_followers(username)
         for follower in follower_list:
             self.database.insert_follower(follower)
-        '''
+        self.load_like_list()
         
     def add_related_page(self):
         '''add related pages to DB and list box'''
@@ -194,15 +195,44 @@ class App(ctk.CTk):
                     photo_id = self.database.insert_photo(related_page_id,key)
                     for account in values:
                         self.database.insert_like_track(photo_id,account)
+        self.load_like_list()
     
     def load_like_list(self):
         for item in self.main_users_list.get_children():
             self.main_users_list.delete(item)
+        like_list = self.get_like_list()
+        for like in like_list:
+            self.main_users_list.insert('', END, values=like)
+    
+    def auto_follow(self):
+        try:
+            int(self.num_users_entry.get())
+        except ValueError:
+            #message box
+            is_validated =  False
+            print("pick valid number")
+        else:
+            is_validated = True
+        if is_validated:
+            like_list = self.get_like_list()
+            users_followed = 0
+            #validate if it was a number inserted on text box
+            n_accounts = int(self.num_users_entry.get())
+            for account in like_list:
+                account = account[0]
+                instagram_id = self.database.select_instagram_id_by_account(account)[0][0]
+                if users_followed >= n_accounts: break
+                it_followed = self.bot.auto_follow(account)
+                users_followed += 1
+                if it_followed:
+                    self.database.insert_bot_follow(login_id,instagram_id)
+    
+    def get_like_list(self):
         id_list = []
-        for user in self.related_list.get(0,END):
+        related_list = self.database.select_related_page(username)
+        for user in related_list:
+            user = user [0]
             id_list.append(self.database.select_instagram_id_by_account(user)[0][0])
-             
         if len(id_list) > 0:
             like_list = self.database.select_like_list(id_list)
-            for like in like_list:
-                self.main_users_list.insert('', END, values=like)
+        return like_list

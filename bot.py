@@ -2,7 +2,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import NoSuchElementException
 
 class InstaBot():
     def __init__(self,path):
@@ -32,15 +32,6 @@ class InstaBot():
         '''get following list'''
         following_list = self.get_profile_info('following',useraccount)
         return following_list
-
-    def get_likes(self):
-        pass
-
-    def auto_follow(self):
-        pass
-
-    def unfollow(self):
-        pass
 
     def get_profile_info(self,info,useraccount):
         '''get followers or folliwing list'''
@@ -73,6 +64,7 @@ class InstaBot():
             check_login = False
         time.sleep(1)
         return check_login
+
     def check_likes(self,instagram_account, num_pic):
         time.sleep(2)
         self.driver.get(f'https://www.instagram.com/{instagram_account}/')
@@ -107,8 +99,19 @@ class InstaBot():
             likes.append(pic_likes)
             urls_likes.update({pic:pic_likes})
         return urls_likes
-            
-            
+
+    def auto_follow(self, account):
+        time.sleep(2)
+        self.driver.get(f"https://www.instagram.com/{account}/")
+        try:
+            time.sleep(3)
+            follow_button = self.driver.find_element(by=By.CSS_SELECTOR, value="._acan._acap._acas")
+            time.sleep(1)
+            follow_button.click()
+            it_followed = True
+        except NoSuchElementException:
+            it_followed = False
+        return it_followed
 
 
 

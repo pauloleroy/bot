@@ -51,6 +51,10 @@ class DBConnection():
         query = self.queries.insert_login_track(user_id)
         cur.execute(query)
         self.conn.commit()
+        query = self.queries.select_login_id()
+        cur.execute(query)
+        login_id = cur.fetchone()[0]
+        return login_id
 
     def insert_following(self, instagram_account):
         '''insert 1 following need to call for loop'''
@@ -82,12 +86,6 @@ class DBConnection():
         cur.execute(query)
         self.conn.commit()
 
-    def insert_bot_action(self):
-        pass
-    
-    def insert_like_track(self):
-        pass
-
     def check_related_id_exists(self,user_account,instagram_account):
         '''check if account is on the related list for that user'''
         cur = self.conn.cursor()
@@ -105,7 +103,7 @@ class DBConnection():
             to_insert = True
         return to_insert
     
-    def load_related_page(self, user_account):
+    def select_related_page(self, user_account):
         '''get all user related pages'''
         cur = self.conn.cursor()
         my_user_id = self.select_user_id_by_account(user_account)[0][0]
@@ -185,5 +183,8 @@ class DBConnection():
         like_list = cur.fetchall()
         return like_list
 
-    def select_follower_vs_bot(self):
-        pass
+    def insert_bot_follow(self,login_id,instagram_id):
+        cur = self.conn.cursor()
+        query = self.queries.insert_bot_follow(login_id,instagram_id)
+        cur.execute(query)
+        self.conn.commit()

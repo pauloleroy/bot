@@ -43,6 +43,9 @@ class MyQueries():
     def insert_login_track(self,user_id):
         query = f"INSERT INTO login_track (user_id,login_time) VALUES ({user_id},CURRENT_TIMESTAMP)"
         return query
+    def select_login_id(self):
+        query = "SELECT login_id FROM login_track ORDER BY login_time DESC"
+        return query
     def photo_id_by_url(self,url):
         query = f"SELECT photo_id FROM photo WHERE photo_url='{url}'"
         return query
@@ -76,4 +79,7 @@ class MyQueries():
         group by instagram_account
         order by count(distinct photo.instagram_id) desc , count(distinct like_track.photo_id) desc
         """
+        return query
+    def insert_bot_follow(self,login_id,instagram_id):
+        query = f"INSERT INTO bot_follow(login_id,instagram_id,created_on,is_activated) VALUES ({login_id},{instagram_id},CURRENT_TIMESTAMP,true)"
         return query
